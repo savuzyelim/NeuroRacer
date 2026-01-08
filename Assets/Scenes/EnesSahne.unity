@@ -497,6 +497,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: vehicle-drag-racer
       objectReference: {fileID: 0}
+    - target: {fileID: 5819003232513149503, guid: e5cdc1d4e6cc92a4bbc58485fa70299d, type: 3}
+      propertyPath: centreOfMass.x
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8932288026248041481, guid: e5cdc1d4e6cc92a4bbc58485fa70299d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
