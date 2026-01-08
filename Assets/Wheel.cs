@@ -9,16 +9,16 @@ public class Wheel : MonoBehaviour
     public Transform carTransform;
 
     [Header("Suspension")]
-    public float springStrength = 4000f;
-    public float springDamper = 600f;
+    public float springStrength = 15000f; // Sert yay
+    public float springDamper = 2000f;    // Yüksek sönümleme (Sallantýyý keser)
     public float suspensionRestDist = 0.5f;
-    public float maxSpringForce = 8000f;
+    public float maxSpringForce = 16000f;
 
     [Header("Grip")]
-    public float tireGripFactor = 0.7f;
+    public float tireGripFactor = 0.8f;
     public float rearGripMultiplier = 1.4f;
     public float tireMass = 20f;
-    public float maxGripForce = 6000f;
+    public float maxGripForce = 8000f;
 
     [Header("Engine")]
     public float accelInput;
@@ -28,6 +28,9 @@ public class Wheel : MonoBehaviour
 
     [Header("Wheel Type")]
     public bool isSteerWheel = false;
+
+    // YENÝ: Aðýrlýk merkezi dengelemesi için ayar
+    private float forceHeightOffset = 0.1f;
 
     void Start()
     {
@@ -49,111 +52,77 @@ public class Wheel : MonoBehaviour
 
         if (!grounded) return;
 
-        Vector3 tireWorldVel =
-            carRigidBody.GetPointVelocity(tireTransform.position);
+        // DÜZELTME BURADA: GetLinearVelocity -> GetPointVelocity
+        Vector3 tireWorldVel = carRigidBody.GetPointVelocity(tireTransform.position);
 
         // ---------- SUSPENSION ----------
 
         float offset = suspensionRestDist - hit.distance;
+        float vel = Vector3.Dot(springDir, tireWorldVel);
+        float springForce = (offset * springStrength) - (vel * springDamper);
 
-        float vel =
-            Vector3.Dot(springDir, tireWorldVel);
-
-        float springForce =
-            (offset * springStrength) -
-            (vel * springDamper);
-
-        springForce = Mathf.Clamp(
-            springForce,
-            -maxSpringForce,
-            maxSpringForce
-        );
+        springForce = Mathf.Clamp(springForce, -maxSpringForce, maxSpringForce);
 
         carRigidBody.AddForceAtPosition(
             springDir * springForce,
             tireTransform.position
         );
 
-        // ---------- LATERAL GRIP ----------
+        // ================================================================
+        // KUVVET UYGULAMA NOKTASI (FORCE POINT) HÝLESÝ
+        // Motor gücünü tekerden deðil, aðýrlýk merkezinin hizasýndan itiyoruz.
+        // ================================================================
+
+        Vector3 forcePoint = tireTransform.position;
+        if (carRigidBody != null)
+        {
+            // Unity 6'da worldCenterOfMass doðru çalýþýr
+            forcePoint.y = carRigidBody.worldCenterOfMass.y - forceHeightOffset;
+        }
+
+        // ---------- LATERAL GRIP (Yanal Tutuþ) ----------
 
         Vector3 sideDir = tireTransform.right;
-
-        float sideVel =
-            Vector3.Dot(sideDir, tireWorldVel);
-
+        float sideVel = Vector3.Dot(sideDir, tireWorldVel);
         float grip = tireGripFactor;
 
-        // rear wheels stabilize the car
-        if (!isSteerWheel)
-            grip *= rearGripMultiplier;
+        if (!isSteerWheel) grip *= rearGripMultiplier;
 
-        float desiredVelChange =
-            -sideVel * grip;
+        float desiredVelChange = -sideVel * grip;
+        float desiredAccel = desiredVelChange / Time.fixedDeltaTime;
+        float gripForce = tireMass * desiredAccel;
 
-        float desiredAccel =
-            desiredVelChange / Time.fixedDeltaTime;
+        gripForce = Mathf.Clamp(gripForce, -maxGripForce, maxGripForce);
 
-        float gripForce =
-            tireMass * desiredAccel;
+        // Yanal kuvveti dengeli noktadan uyguluyoruz
+        carRigidBody.AddForceAtPosition(sideDir * gripForce, forcePoint);
 
-        gripForce = Mathf.Clamp(
-            gripForce,
-            -maxGripForce,
-            maxGripForce
-        );
-
-        carRigidBody.AddForceAtPosition(
-            sideDir * gripForce,
-            tireTransform.position
-        );
-
-        // ---------- ENGINE FORCE ----------
+        // ---------- ENGINE FORCE (Motor Gücü) ----------
 
         Vector3 forwardDir = tireTransform.forward;
 
         if (Mathf.Abs(accelInput) > 0.01f)
         {
-            float carSpeed =
-                Vector3.Dot(
-                    carTransform.forward,
-                    carRigidBody.linearVelocity
-                );
+            // Unity 6 için linearVelocity kullanýmý doðrudur
+            float carSpeed = Vector3.Dot(carTransform.forward, carRigidBody.linearVelocity);
+            float normalizedSpeed = Mathf.Clamp01(Mathf.Abs(carSpeed) / carTopSpeed);
 
-            float normalizedSpeed =
-                Mathf.Clamp01(
-                    Mathf.Abs(carSpeed) / carTopSpeed
-                );
+            float torque = powerCurve.Evaluate(normalizedSpeed) * accelInput * enginePower;
 
-            float torque =
-                powerCurve.Evaluate(normalizedSpeed) *
-                accelInput *
-                enginePower;
-
-            carRigidBody.AddForceAtPosition(
-                forwardDir * torque,
-                tireTransform.position
-            );
+            // Ýleri gücü dengeli noktadan uyguluyoruz
+            carRigidBody.AddForceAtPosition(forwardDir * torque, forcePoint);
         }
 
-        // ---------- AUTO BRAKE ----------
+        // ---------- AUTO BRAKE (Otomatik Fren) ----------
 
         if (Mathf.Abs(accelInput) < 0.01f)
         {
-            float forwardVel =
-                Vector3.Dot(
-                    forwardDir,
-                    tireWorldVel
-                );
+            float forwardVel = Vector3.Dot(forwardDir, tireWorldVel);
+            float brakeStrength = 1500f;
+            float brakeForce = -forwardVel * brakeStrength;
 
-            float brakeStrength = 900f;
-
-            float brakeForce =
-                -forwardVel * brakeStrength;
-
-            carRigidBody.AddForceAtPosition(
-                forwardDir * brakeForce,
-                tireTransform.position
-            );
+            // Freni dengeli noktadan uyguluyoruz
+            carRigidBody.AddForceAtPosition(forwardDir * brakeForce, forcePoint);
         }
     }
 }
