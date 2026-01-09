@@ -15,23 +15,32 @@ public class Wheel : MonoBehaviour
     public float maxSpringForce = 16000f;
 
     [Header("Grip")]
-    public float tireGripFactor = 0.8f;
+    public float tireGripFactor = 1.2f; // Increased base grip
     public float rearGripMultiplier = 1.4f;
     public float tireMass = 20f;
     public float maxGripForce = 8000f;
 
     [Header("Engine")]
-    public float accelInput;   // W = 1 , S = -1
+    public float accelInput;
     public float carTopSpeed = 60f;
     public AnimationCurve powerCurve;
     public float enginePower = 30000f;
 
-    [Header("Wheel Type")]
+    [Header("Steering")]
     public bool isSteerWheel = false;
+    public float steerInput;
+    public float maxSteerAngle = 35f;
+    public float steerSpeed = 8f; // Faster response
+
+    [Header("Steering Assistance")]
+    public float lowSpeedSteerBoost = 2.5f; // Extra steering force at low speeds
+    public float steerAssistForce = 3000f; // Direct steering force
+    public float minSpeedForNormalGrip = 5f; // Speed threshold
 
     [Header("Raycast")]
     public LayerMask groundLayer;
 
+    private float currentSteerAngle = 0f;
     private float forceHeightOffset = 0.1f;
 
     void Start()
@@ -41,6 +50,14 @@ public class Wheel : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Apply steering rotation to front wheels
+        if (isSteerWheel)
+        {
+            float targetAngle = steerInput * maxSteerAngle;
+            currentSteerAngle = Mathf.Lerp(currentSteerAngle, targetAngle, Time.fixedDeltaTime * steerSpeed);
+            tireTransform.localRotation = Quaternion.Euler(0, currentSteerAngle, 0);
+        }
+
         Vector3 springDir = tireTransform.up;
 
         // ---------- RAYCAST ----------
@@ -55,23 +72,14 @@ public class Wheel : MonoBehaviour
 
         if (!grounded) return;
 
-        Vector3 tireWorldVel =
-            carRigidBody.GetPointVelocity(tireTransform.position);
+        Vector3 tireWorldVel = carRigidBody.GetPointVelocity(tireTransform.position);
 
         // ---------- SUSPENSION ----------
-
         float offset = suspensionRestDist - hit.distance;
         float vel = Vector3.Dot(springDir, tireWorldVel);
+        float springForce = (offset * springStrength) - (vel * springDamper);
 
-        float springForce =
-            (offset * springStrength) -
-            (vel * springDamper);
-
-        springForce = Mathf.Clamp(
-            springForce,
-            -maxSpringForce,
-            maxSpringForce
-        );
+        springForce = Mathf.Clamp(springForce, -maxSpringForce, maxSpringForce);
 
         carRigidBody.AddForceAtPosition(
             springDir * springForce,
@@ -80,126 +88,97 @@ public class Wheel : MonoBehaviour
 
         // ---------- FORCE POINT ----------
         Vector3 forcePoint = tireTransform.position;
-        forcePoint.y =
-            carRigidBody.worldCenterOfMass.y -
-            forceHeightOffset;
+        if (carRigidBody != null)
+        {
+            forcePoint.y = carRigidBody.worldCenterOfMass.y - forceHeightOffset;
+        }
 
-        // ---------- LATERAL GRIP (ALWAYS ACTIVE) ----------
+        // ---------- CALCULATE SPEED ----------
+        float carSpeed = carRigidBody.linearVelocity.magnitude;
+        float speedFactor = Mathf.Clamp01(carSpeed / minSpeedForNormalGrip);
 
+        // ---------- STEERING ASSIST (For low speeds) ----------
+        if (isSteerWheel && Mathf.Abs(steerInput) > 0.01f)
+        {
+            // Add direct steering force, stronger at low speeds
+            float steerBoost = Mathf.Lerp(lowSpeedSteerBoost, 1f, speedFactor);
+            Vector3 steerDir = tireTransform.right * steerInput;
+            float steerForce = steerAssistForce * steerBoost;
+
+            carRigidBody.AddForceAtPosition(steerDir * steerForce, forcePoint);
+        }
+
+        // ---------- LATERAL GRIP (with speed-based adjustment) ----------
         Vector3 sideDir = tireTransform.right;
-        float sideVel =
-            Vector3.Dot(sideDir, tireWorldVel);
+        float sideVel = Vector3.Dot(sideDir, tireWorldVel);
 
+        // Base grip
         float grip = tireGripFactor;
 
-        if (!isSteerWheel)
+        // For steering wheels: reduce grip when turning at low speeds
+        if (isSteerWheel && Mathf.Abs(steerInput) > 0.1f)
+        {
+            // Allow more sliding when steering at low speeds
+            float steerGripReduction = Mathf.Lerp(0.4f, 1f, speedFactor);
+            grip *= steerGripReduction;
+        }
+        else if (!isSteerWheel)
+        {
+            // Rear wheels keep high grip
             grip *= rearGripMultiplier;
+        }
 
-        float desiredVelChange =
-            -sideVel * grip;
+        float desiredVelChange = -sideVel * grip;
+        float desiredAccel = desiredVelChange / Time.fixedDeltaTime;
+        float gripForce = tireMass * desiredAccel;
 
-        float desiredAccel =
-            desiredVelChange / Time.fixedDeltaTime;
+        gripForce = Mathf.Clamp(gripForce, -maxGripForce, maxGripForce);
 
-        float gripForce =
-            tireMass * desiredAccel;
-
-        gripForce = Mathf.Clamp(
-            gripForce,
-            -maxGripForce,
-            maxGripForce
-        );
-
-        carRigidBody.AddForceAtPosition(
-            sideDir * gripForce,
-            forcePoint
-        );
+        carRigidBody.AddForceAtPosition(sideDir * gripForce, forcePoint);
 
         // ---------- ENGINE FORCE ----------
+        Vector3 forwardDir = tireTransform.forward;
 
-        Vector3 forwardDir =
-            tireTransform.forward;
-
-        if (accelInput > 0.05f)
+        if (Mathf.Abs(accelInput) > 0.01f)
         {
-            float carSpeed =
-                Vector3.Dot(
-                    carTransform.forward,
-                    carRigidBody.linearVelocity
-                );
+            float forwardSpeed = Vector3.Dot(carTransform.forward, carRigidBody.linearVelocity);
+            float normalizedSpeed = Mathf.Clamp01(Mathf.Abs(forwardSpeed) / carTopSpeed);
 
-            float normalizedSpeed =
-                Mathf.Clamp01(
-                    Mathf.Abs(carSpeed) /
-                    carTopSpeed
-                );
+            float torque = powerCurve.Evaluate(normalizedSpeed) * accelInput * enginePower;
 
-            float torque =
-                powerCurve.Evaluate(normalizedSpeed) *
-                accelInput *
-                enginePower;
-
-            carRigidBody.AddForce(
-                forwardDir * torque
-            );
+            carRigidBody.AddForceAtPosition(forwardDir * torque, forcePoint);
         }
 
-        // ---------- BRAKE (ONLY WHEN S PRESSED) ----------
-
-        if (accelInput < -0.1f)
+        // ---------- ROLLING RESISTANCE ----------
+        if (Mathf.Abs(accelInput) < 0.01f)
         {
-            float forwardVel =
-                Vector3.Dot(
-                    forwardDir,
-                    tireWorldVel
-                );
-
-            float brakeStrength = 1200f;
-
-            float brakeForce =
-                -forwardVel * brakeStrength;
+            float forwardVel = Vector3.Dot(forwardDir, tireWorldVel);
+            float rollingResistance = 120f;
+            float resistForce = -forwardVel * rollingResistance;
 
             carRigidBody.AddForceAtPosition(
-                forwardDir * brakeForce,
-                forcePoint
+                forwardDir * resistForce,
+                tireTransform.position
             );
         }
 
-        // ---------- ENGINE BRAKING (COASTING) ----------
+        Debug.DrawRay(tireTransform.position, -springDir * suspensionRestDist, Color.blue);
 
-        if (Mathf.Abs(accelInput) < 0.05f)
+        // Debug: Show steering direction
+        if (isSteerWheel && Mathf.Abs(steerInput) > 0.01f)
         {
-            float forwardVel =
-                Vector3.Dot(
-                    forwardDir,
-                    tireWorldVel
-                );
-
-            float engineBrake = 80f;
-
-            float brakeForce =
-                -forwardVel * engineBrake;
-
-            carRigidBody.AddForceAtPosition(
-                forwardDir * brakeForce,
-                forcePoint
-            );
+            Debug.DrawRay(forcePoint, tireTransform.right * steerInput * 3f, Color.green);
         }
-
-        Debug.DrawRay(
-            tireTransform.position,
-            -springDir * suspensionRestDist,
-            Color.blue
-        );
     }
 
     void OnCollisionEnter(Collision col)
     {
         if (col.relativeVelocity.magnitude > 15f)
+        {
             accelInput = 0f;
+        }
 
-        Vector3 normal =
-            col.contacts[0].normal;
+        Vector3 normal = col.contacts[0].normal;
 
         carRigidBody.AddForce(
             -normal * 8000f,

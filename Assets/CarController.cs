@@ -26,6 +26,7 @@ public class CarController : MonoBehaviour
         {
             carRb.centerOfMass += centerOfMassOffset;
         }
+        
     }
 
     void Update()
@@ -41,6 +42,8 @@ public class CarController : MonoBehaviour
         // 3. Yarýþ baþladýysa tuþlarý dinle
         accel = Input.GetAxis("Vertical");   // W/S veya Yön Tuþlarý
         steer = Input.GetAxis("Horizontal"); // A/D veya Yön Tuþlarý
+        wheels[1].steerInput = Input.GetAxis("Horizontal"); // Ön sol teker
+        wheels[0].steerInput = Input.GetAxis("Horizontal"); // Ön sað teker
     }
 
     void FixedUpdate()
