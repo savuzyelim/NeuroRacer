@@ -269,15 +269,15 @@ MonoBehaviour:
   carRigidBody: {fileID: 605252011}
   carTransform: {fileID: 605252012}
   springStrength: 8000
-  springDamper: 500
-  suspensionRestDist: 1
+  springDamper: 1000
+  suspensionRestDist: 0.38
   maxSpringForce: 16000
-  tireGripFactor: 0.8
-  rearGripMultiplier: 1.4
+  tireGripFactor: 1.1
+  rearGripMultiplier: 2.1
   tireMass: 20
-  maxGripForce: 16000
+  maxGripForce: 20000
   accelInput: 0
-  carTopSpeed: 30
+  carTopSpeed: 60
   powerCurve:
     serializedVersion: 2
     m_Curve:
@@ -302,8 +302,29 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  enginePower: 6000
+  enginePower: 5000
   isSteerWheel: 0
+--- !u!135 &122791417
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122791412}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.36
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &192646763
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,15 +776,15 @@ MonoBehaviour:
   carRigidBody: {fileID: 605252011}
   carTransform: {fileID: 605252012}
   springStrength: 8000
-  springDamper: 500
-  suspensionRestDist: 1
+  springDamper: 1000
+  suspensionRestDist: 0.38
   maxSpringForce: 16000
-  tireGripFactor: 0.8
-  rearGripMultiplier: 1.4
+  tireGripFactor: 1.1
+  rearGripMultiplier: 2.1
   tireMass: 20
-  maxGripForce: 16000
+  maxGripForce: 20000
   accelInput: 0
-  carTopSpeed: 30
+  carTopSpeed: 60
   powerCurve:
     serializedVersion: 2
     m_Curve:
@@ -788,8 +809,29 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  enginePower: 6000
+  enginePower: 5000
   isSteerWheel: 1
+--- !u!135 &399972728
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399972720}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.36
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &516776237
 GameObject:
   m_ObjectHideFlags: 0
@@ -1051,15 +1093,15 @@ MonoBehaviour:
   carRigidBody: {fileID: 605252011}
   carTransform: {fileID: 605252012}
   springStrength: 8000
-  springDamper: 500
-  suspensionRestDist: 1
+  springDamper: 1000
+  suspensionRestDist: 0.38
   maxSpringForce: 16000
-  tireGripFactor: 0.8
-  rearGripMultiplier: 1.4
+  tireGripFactor: 1.1
+  rearGripMultiplier: 2.1
   tireMass: 20
-  maxGripForce: 16000
+  maxGripForce: 20000
   accelInput: 0
-  carTopSpeed: 30
+  carTopSpeed: 60
   powerCurve:
     serializedVersion: 2
     m_Curve:
@@ -1084,8 +1126,29 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  enginePower: 6000
+  enginePower: 5000
   isSteerWheel: 0
+--- !u!135 &621658400
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621658392}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.36
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &647726685
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1520,6 +1583,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11607767811549944, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11607767811549944, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11607767811549944, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 965434436988013767, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 965434436988013767, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 965434436988013767, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1033180800630413096, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
       propertyPath: m_Size.y
       value: 0.9300552
@@ -1604,6 +1691,22 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3811981105198623479, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811981105198623479, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811981105198623479, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4317777255507632322, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5916294487326433034, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1640,6 +1743,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 9207640297257862619, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9207640297257862619, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9207640297257862619, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.38
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1650,15 +1765,27 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6725736189741286837, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1312079224}
+    - targetCorrespondingSourceObject: {fileID: 6725736189741286837, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1312079228}
     - targetCorrespondingSourceObject: {fileID: 842116634238752882, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 399972724}
+    - targetCorrespondingSourceObject: {fileID: 842116634238752882, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 399972728}
     - targetCorrespondingSourceObject: {fileID: 8307665815668454818, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 122791413}
+    - targetCorrespondingSourceObject: {fileID: 8307665815668454818, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 122791417}
     - targetCorrespondingSourceObject: {fileID: 4144942637585884835, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 621658396}
+    - targetCorrespondingSourceObject: {fileID: 4144942637585884835, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 621658400}
   m_SourcePrefab: {fileID: 100100000, guid: 60b390e22251bd94bb53301dba025ebc, type: 3}
 --- !u!1 &967943893
 GameObject:
@@ -2110,15 +2237,15 @@ MonoBehaviour:
   carRigidBody: {fileID: 605252011}
   carTransform: {fileID: 605252012}
   springStrength: 8000
-  springDamper: 500
-  suspensionRestDist: 1
+  springDamper: 1000
+  suspensionRestDist: 0.38
   maxSpringForce: 16000
-  tireGripFactor: 0.8
-  rearGripMultiplier: 1.4
+  tireGripFactor: 1.1
+  rearGripMultiplier: 2.1
   tireMass: 20
-  maxGripForce: 16000
+  maxGripForce: 20000
   accelInput: 0
-  carTopSpeed: 30
+  carTopSpeed: 60
   powerCurve:
     serializedVersion: 2
     m_Curve:
@@ -2143,8 +2270,29 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  enginePower: 6000
+  enginePower: 5000
   isSteerWheel: 1
+--- !u!135 &1312079228
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312079220}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.36
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1563292657 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3384025575181329629, guid: d7c9b08657eabc54db441e4854d7996e, type: 3}
