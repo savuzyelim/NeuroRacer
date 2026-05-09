@@ -4,7 +4,7 @@ using System.Collections;
 public class RaceStartManager : MonoBehaviour
 {
     [Header("Baðlantýlar")]
-    public CarController oyuncuArabasi;
+    public NewCarController oyuncuArabasi;
     public AudioSource sesKaynagi;
 
     [Header("Iþýk Modelleri (Renderers)")]
@@ -62,8 +62,6 @@ public class RaceStartManager : MonoBehaviour
         {
             GameMusicManager.Instance.MuzigiBaslat();
         }
-
-        oyuncuArabasi.hareketEdebilir = true;
 
         // Hepsini Yeþil Yap
         IsiklariBoya(yesilRenk, parlaklik);
