@@ -43,6 +43,8 @@ public class QuestionManager : MonoBehaviour
     private Sequence acilisSequence;
     private Tween zamanTween;
 
+
+    private float soruBaslangicZamani;
     private void Awake()
     {
         // Singleton yapýsý
@@ -56,6 +58,7 @@ public class QuestionManager : MonoBehaviour
     public void OpenQuestionPanel(QuestionData data)
     {
         simdikiSoru = data;
+        soruBaslangicZamani = Time.realtimeSinceStartup;
 
         // Önceki animasyonlarý temizle
         if (acilisSequence != null) acilisSequence.Kill();
@@ -125,19 +128,34 @@ public class QuestionManager : MonoBehaviour
 
     public void CevapVerildi(int secilenIndex)
     {
-        // Butonlarý kilitle (Tekrar basamasýnlar)
+        // 1. Süreyi hesapla
+        float gecenSure = Time.realtimeSinceStartup - soruBaslangicZamani;
+
+        // 2. Cevap verilerini hazýrla
+        string secilenMetin = simdikiSoru.siklar[secilenIndex];
+        bool dogruMu = (secilenIndex == simdikiSoru.dogruCevapIndex);
+
+        // 3. DATAMANAGER'A KAYDET (Log sistemine entegrasyon)
+        if (DataManager.Instance != null)
+        {
+            DataManager.Instance.LogEkle(simdikiSoru.soruMetni, secilenMetin, dogruMu, gecenSure);
+        }
+
+        // 4. Butonlarý kilitle
         foreach (var btn in sikButonlari) btn.interactable = false;
 
-        if (secilenIndex == simdikiSoru.dogruCevapIndex)
+        if (dogruMu)
         {
-            // DOÐRU! Kutlamayý baþlat
+            // Doðru cevap verildiðinde arabaya BOOST ver!
+            // Oyuncu arabasýndaki NewCarController'a eriþiyoruz
+            var car = FindObjectOfType<NewCarController>();
+            if (car != null) car.ActivateBoost();
+
             StartCoroutine(DogruCevapAnimasyonu());
         }
         else
         {
-            // YANLIÞ!
-            Debug.Log("YANLIÞ CEVAP");
-            // Ýstersen buraya yanlýþ sesi/efekti de ekleyebilirsin
+            Debug.Log("YANLIÞ CEVAP - Kayýt Edildi");
             PaneliKapat();
         }
     }

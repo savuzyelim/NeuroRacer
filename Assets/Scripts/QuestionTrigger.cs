@@ -2,38 +2,55 @@ using UnityEngine;
 
 public class QuestionTrigger : MonoBehaviour
 {
-    [Header("Bu kutuda hangi soru çýkacak?")]
-    public QuestionData soruVerisi; // Inspector'dan buraya soru dosyasýný sürükleyeceksin
+    [Header("Ayarlar")]
+    [Tooltip("Eðer iþaretliyse, bu kutu her zaman belirli bir soruyu sorar. Ýþaretli deðilse öðrenciye özel soru seçer.")]
+    public bool sabitSoruMu = false;
+    public QuestionData sabitSoruVerisi;
 
-    private bool isTriggered = false; // Sürekli tetiklenmesin diye kontrol
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        // Sadece "Player" tag'ine sahip araba çarparsa ve daha önce tetiklenmemiþse
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            isTriggered = true; // Bir daha tetiklenmesini engelle
-
-            // Manager'a "Bu soruyu aç" diyoruz
-            QuestionManager.Instance.OpenQuestionPanel(soruVerisi);
-
-            // Ýstersen kutuyu tamamen yok edebilirsin:
-            // Destroy(gameObject); 
-        }
-    }
+    private bool isTriggered = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        // Sadece "Player" tag'ine sahip araba çarparsa ve daha önce tetiklenmemiþse
-        if (other.CompareTag("Player"))
+        // Tetiklenme kontrolü ve Tag kontrolü
+        if (!isTriggered && other.CompareTag("Player"))
         {
-            isTriggered = true; // Bir daha tetiklenmesini engelle
+            isTriggered = true;
 
-            // Manager'a "Bu soruyu aç" diyoruz
-            QuestionManager.Instance.OpenQuestionPanel(soruVerisi);
+            // 1. Soruyu Belirle
+            QuestionData sorulacakSoru = null;
 
-            // Ýstersen kutuyu tamamen yok edebilirsin:
-            // Destroy(gameObject); 
+            if (sabitSoruMu && sabitSoruVerisi != null)
+            {
+                // Belirli bir eðitim noktasýysa sabit soruyu kullan
+                sorulacakSoru = sabitSoruVerisi;
+            }
+            else
+            {
+                // Deðilse, öðrencinin loglarýný analiz eden sistemden dinamik soru al
+                AdaptiveQuestionSelector selector = FindObjectOfType<AdaptiveQuestionSelector>();
+                if (selector != null)
+                {
+                    sorulacakSoru = selector.SiradakiSoruyuGetir();
+                }
+            }
+
+            // 2. Paneli Aç
+            if (sorulacakSoru != null)
+            {
+                QuestionManager.Instance.OpenQuestionPanel(sorulacakSoru);
+            }
+            else
+            {
+                Debug.LogWarning("Soru verisi bulunamadý! Lütfen AdaptiveQuestionSelector veya sabit soruyu kontrol edin.");
+            }
+
+            // 3. Görsel Geri Bildirim ve Temizlik
+            // Kutuyu hemen yok etmek yerine görünmez yapabiliriz (ses/efekt bitene kadar kalmasý için)
+            //gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.GetComponent<Collider>().enabled = false;
+
+            // 5 saniye sonra tamamen temizle (bellek yönetimi)
+            //Destroy(gameObject, 5f);
         }
     }
 }

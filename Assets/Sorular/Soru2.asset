@@ -10,14 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49cf172270add6b458abe5e6fdcdf63d, type: 3}
-  m_Name: Soru1
-  m_EditorClassIdentifier: 
-  soruMetni: bu hangi harf?
-  siklar:
-  - a
-  - b
-  - c
+  m_Name: Soru2
+  m_EditorClassIdentifier: Assembly-CSharp::QuestionData
+  soruMetni: 
+  siklar: []
   dogruCevapIndex: 0
-  soruSesi: {fileID: 8300000, guid: ff5068b1018e76a4995afab73c2ee530, type: 3}
-  kategori: Normal Soru
-  zorlukSeviyesi: 1
+  soruSesi: {fileID: 0}
+  kategori: 
+  zorlukSeviyesi: 0
