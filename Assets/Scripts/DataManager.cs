@@ -12,12 +12,13 @@ public class DataManager : MonoBehaviour
         Instance = this;
     }
 
-    public void LogEkle(string kelime, string secim, bool sonuc, float sure)
+    public void LogEkle(string kelime, string secim, bool sonuc, float sure, SoruKategorisi kat, int zor)
     {
-        QuestionLog yeniLog = new QuestionLog(kelime, secim, sonuc, sure);
+        // Yeni parametrelerle log oluþturuluyor
+        QuestionLog yeniLog = new QuestionLog(kelime, secim, sonuc, sure, kat, zor);
         tumLoglar.Add(yeniLog);
 
-        Debug.Log($"Log Kaydedildi: {kelime} - Doðru mu: {sonuc}");
+        Debug.Log($"Log Kaydedildi: {kelime} | Kat: {kat} | Zorluk: {zor} | Sonuç: {sonuc}");
     }
 
     // Oyun bittiðinde verileri CSV (Excel'de açýlabilir) olarak kaydeder
