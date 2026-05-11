@@ -405,8 +405,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601015816a0510449a587378f9646370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sabitSoruMu: 1
-  sabitSoruVerisi: {fileID: 11400000, guid: 9ba9bcd8bd06aa2459620990b38c1419, type: 2}
+  sabitSoruMu: 0
+  sabitSoruVerisi: {fileID: 11400000, guid: d88b6e66fc76a4047a8b37648560f15e, type: 2}
 --- !u!65 &272594634
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -794,8 +794,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601015816a0510449a587378f9646370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sabitSoruMu: 1
-  sabitSoruVerisi: {fileID: 11400000, guid: 9ba9bcd8bd06aa2459620990b38c1419, type: 2}
+  sabitSoruMu: 0
+  sabitSoruVerisi: {fileID: 11400000, guid: d88b6e66fc76a4047a8b37648560f15e, type: 2}
 --- !u!65 &548475985
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1148,15 +1148,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 49.4
   m_fontSizeBase: 72
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -1492,15 +1492,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 49.4
   m_fontSizeBase: 72
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -1629,15 +1629,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 49.4
   m_fontSizeBase: 72
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -1696,6 +1696,7 @@ GameObject:
   - component: {fileID: 1069766144}
   - component: {fileID: 1069766147}
   - component: {fileID: 1069766146}
+  - component: {fileID: 1069766148}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1746,7 +1747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7f13b5735477924b96699c9ebee852e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DataManager
-  tumLoglar: []
+  mevcutYarisLoglari: []
 --- !u!114 &1069766145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1870,6 +1871,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AdaptiveQuestionManager
   tumSorular:
   - {fileID: 11400000, guid: d88b6e66fc76a4047a8b37648560f15e, type: 2}
+  - {fileID: 11400000, guid: 4af9084ad50cae04ead1c92cc5ccf512, type: 2}
+  - {fileID: 11400000, guid: ce27c8fb90146a247acd7af246cd92b8, type: 2}
+  - {fileID: 11400000, guid: fa3560cd64248d54e8e0da9039c8d172, type: 2}
+  - {fileID: 11400000, guid: b89241804287fa245b22376b6f396c6d, type: 2}
+  - {fileID: 11400000, guid: fbc09627bdd8f3e46a88ea50e1fc3a80, type: 2}
+  - {fileID: 11400000, guid: eeb3c7c751f977242b272c1042dd7228, type: 2}
+  - {fileID: 11400000, guid: 64ec2162d4a0f2e47a3ceef32fdd6807, type: 2}
+  - {fileID: 11400000, guid: 0fba4258aa884954785c4fbb1ca061d3, type: 2}
+  - {fileID: 11400000, guid: 4cdaeb08f9adbef469a0ee3d46e503f7, type: 2}
+  - {fileID: 11400000, guid: da893ac9d2a5164499f6a31d0c101a5a, type: 2}
+  - {fileID: 11400000, guid: 4968028b2e9f0e448b6995af27af5b54, type: 2}
+  - {fileID: 11400000, guid: 04c14325d490d5545bdc476e23086c66, type: 2}
+  - {fileID: 11400000, guid: 61d9aa27df4fd844f9f60935dacafaa4, type: 2}
+  - {fileID: 11400000, guid: c5abece90b0e5ef4cb6438b78f6318d1, type: 2}
+  - {fileID: 11400000, guid: bee4ae418a5d98145a3c86498ed75df4, type: 2}
+  - {fileID: 11400000, guid: 3973b7e6a24dea8438acb391afe87a23, type: 2}
+  - {fileID: 11400000, guid: 2b8d738ed289d674ea7e9f8dd40d1f80, type: 2}
+  - {fileID: 11400000, guid: 2023fce2e773df24fad454f6d20bbbc5, type: 2}
+  - {fileID: 11400000, guid: 613427a9af7d18946aefa59ea47a1db6, type: 2}
+  - {fileID: 11400000, guid: 51e2c3c2a0eae434fa249e4e274367f5, type: 2}
+  - {fileID: 11400000, guid: 5632fbfc2fb2c014c9745eb016ebfe65, type: 2}
+  - {fileID: 11400000, guid: b63b4b3e635ffb84bb3edca4d2a99d3b, type: 2}
+  - {fileID: 11400000, guid: 13e964dcceb3ad344aa00f66c449486e, type: 2}
+  - {fileID: 11400000, guid: bdc9ba9d0cde64b49a707f1241b082cb, type: 2}
+  - {fileID: 11400000, guid: ad9d82ea1a1df034ea19871c7ae66a3e, type: 2}
+  - {fileID: 11400000, guid: 9f9b4b2a2eac58948847cce2764df0a8, type: 2}
+  - {fileID: 11400000, guid: d870c5d16738ad04f96eaaa3fa5f27fd, type: 2}
+  - {fileID: 11400000, guid: 0a18382e3fc5a5b4a858bcca61baf121, type: 2}
+  - {fileID: 11400000, guid: 5d32f0f1dc7658046b43fe88433816e1, type: 2}
   anaPanelObjesi: {fileID: 234507088}
   soruKutusuRect: {fileID: 1259498338}
   arkaplanGorseli: {fileID: 1259498339}
@@ -1890,6 +1920,18 @@ MonoBehaviour:
   enYavasZaman: 0.005
   ekranDisiKonumY: -2000
   arkaplanHedefAlpha: 0.9
+--- !u!114 &1069766148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069766140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47f6ee48c5d38ba4a9136e8565262219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HistoryAnalyzer
 --- !u!4 &1157225415 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7289460482470085850, guid: 0272d5b08108c7543b70c3ccbcd7249c, type: 3}
@@ -1941,8 +1983,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601015816a0510449a587378f9646370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sabitSoruMu: 1
-  sabitSoruVerisi: {fileID: 11400000, guid: 9ba9bcd8bd06aa2459620990b38c1419, type: 2}
+  sabitSoruMu: 0
+  sabitSoruVerisi: {fileID: 11400000, guid: d88b6e66fc76a4047a8b37648560f15e, type: 2}
 --- !u!65 &1256045450
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2211,15 +2253,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 78
+  m_fontSize: 54.9
   m_fontSizeBase: 78
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 5
   m_characterHorizontalScale: 1

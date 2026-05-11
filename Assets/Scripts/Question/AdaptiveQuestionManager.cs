@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;            
-using UnityEngine.UI;   
-using DG.Tweening;      
-using System.Collections; 
+using TMPro;
+using UnityEngine.UI;
+using DG.Tweening;
+using System.Collections;
 
 public class AdaptiveQuestionManager : MonoBehaviour
 {
@@ -14,35 +14,34 @@ public class AdaptiveQuestionManager : MonoBehaviour
     private int[] hataListesi = new int[3];
 
     [Header("UI Referanslarý")]
-    public GameObject anaPanelObjesi;    // Komple paneli açýp kapatan obje
-    public RectTransform soruKutusuRect; // Hareket edecek olan kutu
-    public Image arkaplanGorseli;        // Arkadaki siyah perde
+    public GameObject anaPanelObjesi;
+    public RectTransform soruKutusuRect;
+    public Image arkaplanGorseli;
 
     [Header("UI Ýçerik")]
     public TextMeshProUGUI soruText;
     public Button[] sikButonlari;
     public AudioSource sesKaynagi;
 
-    [Header("Doðru Cevap Ayarlarý (YENÝ)")]
-    public AudioClip dogruCevapSesi;     // "Ding" sesi
-    public Color dogruRenk = Color.green;// Hangi renk olsun? (Yeþil)
-    [Range(0f, 1f)] public float dogruCevapOpaklik = 0.3f; // Yeþil ne kadar koyu olsun? (0.3 çok þeffaf)
-    public float kutlamaSuresi = 1.5f;   // Panel kapanmadan önce kaç sn beklesin?
+    [Header("Doðru Cevap Ayarlarý")]
+    public AudioClip dogruCevapSesi;
+    public Color dogruRenk = Color.green;
+    [Range(0f, 1f)] public float dogruCevapOpaklik = 0.3f;
+    public float kutlamaSuresi = 1.5f;
 
     [Header("Animasyon Hýzlarý")]
     [Range(0.1f, 2f)] public float arkaplanGelisSuresi = 0.5f;
     [Range(0.1f, 2f)] public float kutuGelisSuresi = 0.6f;
 
     [Header("Zaman (Matrix Modu) Ayarlarý")]
-    [Range(0.1f, 3f)] public float yavaslamaSuresi = 0.8f; // Frene basma hýzý
-    [Range(0.1f, 3f)] public float hizlanmaSuresi = 0.5f;  // Gaza basma hýzý
-    public float enYavasZaman = 0.005f; // Oyun hýzý kaça düþsün?
+    [Range(0.1f, 3f)] public float yavaslamaSuresi = 0.8f;
+    [Range(0.1f, 3f)] public float hizlanmaSuresi = 0.5f;
+    public float enYavasZaman = 0.005f;
 
     [Header("Konum Ayarlarý")]
-    public float ekranDisiKonumY = -2000f; // Kutu aþaðýda nerede saklansýn?
-    [Range(0f, 1f)] public float arkaplanHedefAlpha = 0.90f; // Siyah ekran ne kadar koyu olsun?
+    public float ekranDisiKonumY = -2000f;
+    [Range(0f, 1f)] public float arkaplanHedefAlpha = 0.90f;
 
-    // Özel deðiþkenler
     private QuestionData simdikiSoru;
     private float varsayilanFixedDeltaTime;
     private Sequence acilisSequence;
@@ -51,61 +50,48 @@ public class AdaptiveQuestionManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton yapýsý
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
         anaPanelObjesi.SetActive(false);
-        varsayilanFixedDeltaTime = 0.02f; // Unity varsayýlaný
+        varsayilanFixedDeltaTime = 0.02f;
     }
 
     public void OpenQuestionPanel(QuestionData data)
     {
-        simdikiSoru = data;
+        // Eðer data null gelirse (Trigger'dan boþ gelirse) otomatik seçim yap
+        simdikiSoru = (data != null) ? data : SiradakiSoruyuGetir();
+
         soruBaslangicZamani = Time.realtimeSinceStartup;
 
-        // Önceki animasyonlarý temizle
         if (acilisSequence != null) acilisSequence.Kill();
         if (zamanTween != null) zamanTween.Kill();
 
-        // -- SIFIRLAMA (Reset) --
-        // Arkaplaný siyaha ve tam þeffafa çek
         arkaplanGorseli.color = new Color(0, 0, 0, 0);
-        // Kutuyu ekranýn altýna ýþýnla
         soruKutusuRect.anchoredPosition = new Vector2(0, ekranDisiKonumY);
 
-        // Butonlarý aktif et
         foreach (var btn in sikButonlari) btn.interactable = true;
 
-        // Paneli Aç
         anaPanelObjesi.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Ýçerikleri Doldur
-        soruText.text = data.soruMetni;
-        if (data.soruSesi != null && sesKaynagi != null)
+        soruText.text = simdikiSoru.soruMetni;
+        if (simdikiSoru.soruSesi != null && sesKaynagi != null)
         {
-            sesKaynagi.clip = data.soruSesi;
+            sesKaynagi.clip = simdikiSoru.soruSesi;
             sesKaynagi.Play();
         }
-        ButonlariHazirla(data);
+        ButonlariHazirla(simdikiSoru);
 
-        // -- GÖRSEL ANÝMASYON (DOTween) --
-        acilisSequence = DOTween.Sequence();
-        acilisSequence.SetUpdate(true); // Zaman dursa bile çalýþ
-
-        // 1. Arkaplan kararsýn
+        acilisSequence = DOTween.Sequence().SetUpdate(true);
         acilisSequence.Append(arkaplanGorseli.DOFade(arkaplanHedefAlpha, arkaplanGelisSuresi));
-        // 2. Kutu alttan gelsin (Hafif gecikmeli)
         acilisSequence.Join(soruKutusuRect.DOAnchorPosY(0, kutuGelisSuresi)
             .SetDelay(arkaplanGelisSuresi * 0.3f)
             .SetEase(Ease.OutBack));
 
-        // -- MÜZÝK KISMA --
         if (GameMusicManager.Instance != null) GameMusicManager.Instance.SesiKis();
 
-        // -- ZAMANI YAVAÞLATMA --
         zamanTween = DOVirtual.Float(Time.timeScale, enYavasZaman, yavaslamaSuresi, (x) =>
         {
             Time.timeScale = x;
@@ -115,48 +101,38 @@ public class AdaptiveQuestionManager : MonoBehaviour
 
     public QuestionData SiradakiSoruyuGetir()
     {
-        // 1. Her seçimden önce hata listesini sýfýrla ki eski veriler üst üste binmesin
+        // 1. Geçmiþ yarýþlarý analiz et (Tüm CSV dosyalarý üzerinden)
+        HistoryAnalyzer.GelisimOzeti gecmisAnalizi = HistoryAnalyzer.GecmisiAnalizEt();
+
+        Debug.Log(gecmisAnalizi.enCokHataYapilanKategori);
+
+        // 2. Mevcut yarýþ içindeki hatalarý da ekle
         System.Array.Clear(hataListesi, 0, hataListesi.Length);
-
-        // 2. DataManager'daki loglara bak (Son 20 log gibi bir sýnýr koymak daha mantýklýdýr)
-        foreach (var log in DataManager.Instance.tumLoglar)
+        foreach (var log in DataManager.Instance.mevcutYarisLoglari)
         {
-            if (!log.dogruMu)
-            {
-                // SoruData içinde kategoriyi enum olarak tuttuðun için index'e çeviriyoruz
-                // log objesine 'kategori' bilgisini de eklediðinden emin olmalýsýn
-                // hataListesi[0] = GorselBenzerlik, [1] = HeceKaristirma, [2] = Fonolojik
-                hataListesi[(int)log.kategori]++;
-            }
+            if (!log.dogruMu) hataListesi[(int)log.kategori]++;
         }
 
-        // 3. Eðer yeterli veri varsa (Örn: 10 soru), en çok hata yapýlan kategoriyi bul
-        if (DataManager.Instance.tumLoglar.Count >= 10)
+        // 3. En sorunlu kategoriyi belirle (Geçmiþ + Mevcut)
+        SoruKategorisi hedefKategori = gecmisAnalizi.enCokHataYapilanKategori;
+
+        // Eðer mevcut yarýþta baþka bir kategoride patlama yaþanýyorsa ona odaklan
+        for (int i = 0; i < hataListesi.Length; i++)
         {
-            int maxHataIndex = 0;
-            for (int i = 1; i < hataListesi.Length; i++)
-            {
-                if (hataListesi[i] > hataListesi[maxHataIndex])
-                {
-                    maxHataIndex = i;
-                }
-            }
-
-            // Eðer en çok hata yapýlan kategoride bariz bir sorun varsa (örn en az 3 hata)
-            if (hataListesi[maxHataIndex] > 2)
-            {
-                // O kategorideki sorulardan rastgele bir liste oluþtur ve birini seç
-                SoruKategorisi enZorlanilanKategori = (SoruKategorisi)maxHataIndex;
-                List<QuestionData> uygunSorular = tumSorular.FindAll(s => s.kategori == enZorlanilanKategori);
-
-                if (uygunSorular.Count > 0)
-                    return uygunSorular[Random.Range(0, uygunSorular.Count)];
-            }
+            if (hataListesi[i] > 3) hedefKategori = (SoruKategorisi)i;
         }
 
-        // Yeterli veri yoksa veya hata daðýlýmý eþitse tamamen rastgele soru ver
+        // 4. Adaptif Seçim: %70 ihtimalle zorlanýlan alandan sor
+        if (Random.value < 0.7f)
+        {
+            List<QuestionData> adaySorular = tumSorular.FindAll(s => s.kategori == hedefKategori);
+            if (adaySorular.Count > 0) return adaySorular[Random.Range(0, adaySorular.Count)];
+        }
+
+        // Deðilse tamamen rastgele
         return tumSorular[Random.Range(0, tumSorular.Count)];
     }
+
     private void ButonlariHazirla(QuestionData data)
     {
         for (int i = 0; i < sikButonlari.Length; i++)
@@ -176,14 +152,11 @@ public class AdaptiveQuestionManager : MonoBehaviour
 
     public void CevapVerildi(int secilenIndex)
     {
-        // 1. Süreyi hesapla
         float gecenSure = Time.realtimeSinceStartup - soruBaslangicZamani;
-
-        // 2. Cevap verilerini hazýrla
         string secilenMetin = simdikiSoru.siklar[secilenIndex];
+        string dogruMetin = simdikiSoru.siklar[simdikiSoru.dogruCevapIndex];
         bool dogruMu = (secilenIndex == simdikiSoru.dogruCevapIndex);
 
-        // 3. DATAMANAGER'A KAYDET (Log sistemine entegrasyon)
         if (DataManager.Instance != null)
         {
             DataManager.Instance.LogEkle(
@@ -192,57 +165,37 @@ public class AdaptiveQuestionManager : MonoBehaviour
                 dogruMu,
                 gecenSure,
                 simdikiSoru.kategori,
-                simdikiSoru.zorlukSeviyesi
+                simdikiSoru.zorlukSeviyesi,
+                dogruMetin
             );
         }
 
-        // 4. Butonlarý kilitle
         foreach (var btn in sikButonlari) btn.interactable = false;
 
         if (dogruMu)
         {
-            // Doðru cevap verildiðinde arabaya BOOST ver!
-            // Oyuncu arabasýndaki NewCarController'a eriþiyoruz
             var car = FindObjectOfType<NewCarController>();
             if (car != null) car.ActivateBoost();
-
             StartCoroutine(DogruCevapAnimasyonu());
         }
         else
         {
-            Debug.Log("YANLIÞ CEVAP - Kayýt Edildi");
             PaneliKapat();
         }
     }
 
-    // --- SENÝN ÝSTEDÝÐÝN ÖZEL YEÞÝL EFEKT ---
     IEnumerator DogruCevapAnimasyonu()
     {
-        // 1. Yazýyý deðiþtir
         soruText.text = "DOÐRU BÝLDÝN!";
+        if (sesKaynagi != null && dogruCevapSesi != null) sesKaynagi.PlayOneShot(dogruCevapSesi);
 
-        // 2. "Ding" sesini çal
-        if (sesKaynagi != null && dogruCevapSesi != null)
-        {
-            sesKaynagi.PlayOneShot(dogruCevapSesi);
-        }
-
-        // 3. Arkaplan Rengi Ayarla (Transparan Yeþil)
         Color seffafYesil = dogruRenk;
-        seffafYesil.a = dogruCevapOpaklik; // Senin ayarladýðýn düþük alpha (0.3 gibi)
+        seffafYesil.a = dogruCevapOpaklik;
         arkaplanGorseli.color = seffafYesil;
 
-        // 4. Nefes Alma Efekti (Yanýp Sönme)
-        // Belirlediðin alpha'dan (0.3), neredeyse sýfýra (0.05) inip geri gelecek.
-        // Göz yormayan yumuþak bir efekt.
-        arkaplanGorseli.DOFade(0.05f, 0.25f)
-            .SetLoops(6, LoopType.Yoyo)
-            .SetUpdate(true);
+        arkaplanGorseli.DOFade(0.05f, 0.25f).SetLoops(6, LoopType.Yoyo).SetUpdate(true);
 
-        // 5. Kutlama süresi kadar bekle
         yield return new WaitForSecondsRealtime(kutlamaSuresi);
-
-        // 6. Bitir
         PaneliKapat();
     }
 
@@ -251,17 +204,14 @@ public class AdaptiveQuestionManager : MonoBehaviour
         if (acilisSequence != null) acilisSequence.Kill();
         if (zamanTween != null) zamanTween.Kill();
 
-        // Kapanýþ Animasyonu (Hýzlýca aþaðý git ve kaybol)
         arkaplanGorseli.DOFade(0f, 0.3f).SetUpdate(true);
         soruKutusuRect.DOAnchorPosY(ekranDisiKonumY, 0.3f)
             .SetEase(Ease.InBack)
             .SetUpdate(true)
             .OnComplete(() => anaPanelObjesi.SetActive(false));
 
-        // Müziði Geri Aç
         if (GameMusicManager.Instance != null) GameMusicManager.Instance.SesiAc();
 
-        // Zamaný Normale Döndür (Hýzlý ivmeyle)
         zamanTween = DOVirtual.Float(Time.timeScale, 1.0f, hizlanmaSuresi, (x) =>
         {
             Time.timeScale = x;

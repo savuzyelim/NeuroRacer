@@ -7,14 +7,12 @@ public class QuestionTrigger : MonoBehaviour
     public bool sabitSoruMu = false;
     public QuestionData sabitSoruVerisi;
 
-    private bool isTriggered = false;
 
     private void OnTriggerEnter(Collider other)
     {
         // Tetiklenme kontrolü ve Tag kontrolü
-        if (!isTriggered && other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            isTriggered = true;
 
             // 1. Soruyu Belirle
             QuestionData sorulacakSoru = null;

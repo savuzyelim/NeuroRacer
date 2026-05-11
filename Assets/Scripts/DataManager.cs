@@ -1,41 +1,46 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
-    public List<QuestionLog> tumLoglar = new List<QuestionLog>();
+    public List<QuestionLog> mevcutYarisLoglari = new List<QuestionLog>();
+
+    private string dosyaAdi;
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
+        else { Destroy(gameObject); }
+
+        // Her yeni yarýþ için benzersiz dosya adý: NeuroRacer_2026_05_11_1530.csv
+        dosyaAdi = "NeuroRacer_" + DateTime.Now.ToString("yyyy_MM_dd_HHmm") + ".csv";
     }
 
-    public void LogEkle(string kelime, string secim, bool sonuc, float sure, SoruKategorisi kat, int zor)
+    public void LogEkle(string soru, string secilen, bool sonuc, float sure, SoruKategorisi kat, int zorluk, string dogruCevap)
     {
-        // Yeni parametrelerle log oluþturuluyor
-        QuestionLog yeniLog = new QuestionLog(kelime, secim, sonuc, sure, kat, zor);
-        tumLoglar.Add(yeniLog);
+        QuestionLog yeniLog = new QuestionLog(soru, secilen, sonuc, sure, kat, zorluk);
+        // Log sýnýfýna doðru cevabý da eklediðinden emin ol (QuestionCore.cs güncellemesi aþaðýda)
+        yeniLog.sorulanKelime = dogruCevap;
 
-        Debug.Log($"Log Kaydedildi: {kelime} | Kat: {kat} | Zorluk: {zor} | Sonuç: {sonuc}");
+        mevcutYarisLoglari.Add(yeniLog);
     }
 
-    // Oyun bittiðinde verileri CSV (Excel'de açýlabilir) olarak kaydeder
     public void VerileriKaydet()
     {
-        string yol = Application.persistentDataPath + "/NeuroRacer_Log.csv";
-        TextWriter tw = new StreamWriter(yol, false);
+        if (mevcutYarisLoglari.Count == 0) return;
 
-        // Baþlýk satýrý
-        tw.WriteLine("Tarih,Sorulan Kelime,Secilen Cevap,Sonuc,Sure(sn)");
-
-        foreach (var log in tumLoglar)
+        string yol = Path.Combine(Application.persistentDataPath, dosyaAdi);
+        using (StreamWriter sw = new StreamWriter(yol, false))
         {
-            tw.WriteLine($"{log.tarih},{log.sorulanKelime},{log.secilenCevap},{log.dogruMu},{log.cevaplamaSuresi}");
+            sw.WriteLine("Tarih,Secilen,DogruCevap,Sonuc,Sure,Kategori,Zorluk");
+            foreach (var log in mevcutYarisLoglari)
+            {
+                sw.WriteLine($"{log.tarih},{log.secilenCevap},{log.sorulanKelime},{log.dogruMu},{log.cevaplamaSuresi},{log.kategori},{log.zorluk}");
+            }
         }
-
-        tw.Close();
-        Debug.Log("Tüm veriler kaydedildi: " + yol);
+        Debug.Log("Yarýþ kaydedildi: " + yol);
     }
 }
