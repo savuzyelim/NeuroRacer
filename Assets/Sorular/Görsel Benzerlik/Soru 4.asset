@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 860bfc15db90054419f816a1cbfe45c2, type: 3}
   m_Name: Soru 4
   m_EditorClassIdentifier: Assembly-CSharp::QuestionData
   soruMetni: Bu Ses Hangi Kelime
   siklar:
-  - Nasa
-  - Wasa
-  - Masa
-  dogruCevapIndex: 2
-  soruSesi: {fileID: 8300000, guid: ff5068b1018e76a4995afab73c2ee530, type: 3}
+  - Kiprik
+  - Kirpik
+  - Pirkik
+  dogruCevapIndex: 1
+  soruSesi: {fileID: 8300000, guid: 32a1ba1c57851964a8744eb6864bbb05, type: 3}
   kategori: 0
   zorlukSeviyesi: 1

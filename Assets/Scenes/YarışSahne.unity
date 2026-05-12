@@ -1760,6 +1760,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aee03ff4697b69d499253043eedbbb2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  panels: []
+  menuManager: {fileID: 0}
 --- !u!82 &1069766146
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1881,25 +1883,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0fba4258aa884954785c4fbb1ca061d3, type: 2}
   - {fileID: 11400000, guid: 4cdaeb08f9adbef469a0ee3d46e503f7, type: 2}
   - {fileID: 11400000, guid: da893ac9d2a5164499f6a31d0c101a5a, type: 2}
-  - {fileID: 11400000, guid: 4968028b2e9f0e448b6995af27af5b54, type: 2}
-  - {fileID: 11400000, guid: 04c14325d490d5545bdc476e23086c66, type: 2}
-  - {fileID: 11400000, guid: 61d9aa27df4fd844f9f60935dacafaa4, type: 2}
-  - {fileID: 11400000, guid: c5abece90b0e5ef4cb6438b78f6318d1, type: 2}
-  - {fileID: 11400000, guid: bee4ae418a5d98145a3c86498ed75df4, type: 2}
-  - {fileID: 11400000, guid: 3973b7e6a24dea8438acb391afe87a23, type: 2}
-  - {fileID: 11400000, guid: 2b8d738ed289d674ea7e9f8dd40d1f80, type: 2}
-  - {fileID: 11400000, guid: 2023fce2e773df24fad454f6d20bbbc5, type: 2}
-  - {fileID: 11400000, guid: 613427a9af7d18946aefa59ea47a1db6, type: 2}
+  - {fileID: 11400000, guid: 98940c90a47ab804e9eb6568efeb5deb, type: 2}
+  - {fileID: 11400000, guid: df3d548eaf085fc4c9e1eb86e779e1d4, type: 2}
+  - {fileID: 11400000, guid: c9ca41ee35dd8dc43a2f19d473c8e95d, type: 2}
+  - {fileID: 11400000, guid: e6812b158fb168c468ad7e08c9f79644, type: 2}
+  - {fileID: 11400000, guid: e0b7916cf68e4694f8596733366ca54e, type: 2}
+  - {fileID: 11400000, guid: d8393400d6b079645aafdc59b7b99384, type: 2}
+  - {fileID: 11400000, guid: 5ba76fa459020a445a86898bebf30bf9, type: 2}
+  - {fileID: 11400000, guid: 4c111fa0f5ae7ea4dbd1de0aa0a2c41c, type: 2}
+  - {fileID: 11400000, guid: da2f8964fa51f884db7344225f3cf1bb, type: 2}
   - {fileID: 11400000, guid: 51e2c3c2a0eae434fa249e4e274367f5, type: 2}
   - {fileID: 11400000, guid: 5632fbfc2fb2c014c9745eb016ebfe65, type: 2}
-  - {fileID: 11400000, guid: b63b4b3e635ffb84bb3edca4d2a99d3b, type: 2}
-  - {fileID: 11400000, guid: 13e964dcceb3ad344aa00f66c449486e, type: 2}
-  - {fileID: 11400000, guid: bdc9ba9d0cde64b49a707f1241b082cb, type: 2}
-  - {fileID: 11400000, guid: ad9d82ea1a1df034ea19871c7ae66a3e, type: 2}
-  - {fileID: 11400000, guid: 9f9b4b2a2eac58948847cce2764df0a8, type: 2}
-  - {fileID: 11400000, guid: d870c5d16738ad04f96eaaa3fa5f27fd, type: 2}
-  - {fileID: 11400000, guid: 0a18382e3fc5a5b4a858bcca61baf121, type: 2}
-  - {fileID: 11400000, guid: 5d32f0f1dc7658046b43fe88433816e1, type: 2}
+  - {fileID: 11400000, guid: f416c3fb926146b4ea3d8c5920a256bd, type: 2}
+  - {fileID: 11400000, guid: 29e391c9a38846f49aa5f17e327d1493, type: 2}
+  - {fileID: 11400000, guid: cd3123465fba81142864644a42bb1ccc, type: 2}
+  - {fileID: 11400000, guid: 5880d6e8a908e8a43a73647fbdf0a503, type: 2}
+  - {fileID: 11400000, guid: 7f310525de3807447a96492ced0b262a, type: 2}
+  - {fileID: 11400000, guid: 132262752a0969e4fb60dc6b8c203d91, type: 2}
+  - {fileID: 11400000, guid: bb24ac655a18e1344ac7018fa727b7d0, type: 2}
+  - {fileID: 11400000, guid: f206e8256c9db9e4fa8c0e9a4db129aa, type: 2}
   anaPanelObjesi: {fileID: 234507088}
   soruKutusuRect: {fileID: 1259498338}
   arkaplanGorseli: {fileID: 1259498339}
